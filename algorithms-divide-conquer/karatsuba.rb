@@ -12,25 +12,34 @@
 #
 #[TIP: before submitting, first test the correctness of your program on some small test cases of your own devising. Then post your best test cases to the discussion forums to help your fellow students!]
 
+def normalize_length q
+  if q.length.odd?
+    "0" + q
+  else
+    q
+  end
+end
+
 def karatsuba n, m
-  len = n.length
-  if len == 2
+  puts "n = #{n}; m = #{m}"
+  n = normalize_length n
+  m = normalize_length m
+  len_n = n.length
+  len_m = m.length
+
+  if len_n == 2 || len_m == 2
     n.to_i * m.to_i
   else
-    a = n[0..(len/2 -1)]
-    puts "a = #{a} (56)"
-    b = n[(len/2)..len]
-    puts "b = #{b} (78)"
-    c = m[0..(len/2 - 1)]
-    puts "c = #{c} (12)"
-    d = m[(len/2)..len]
-    puts "d = #{d} (34)"
+    a = n[0..(len_n/2 - 1)]
+    b = n[(len_n/2)..len_n]
+    c = m[0..(len_m/2 - 1)]
+    d = m[(len_m/2)..len_m]
 
     step_1 = karatsuba a, c
     step_2 = karatsuba b, d
-    step_3 = karatsuba((a + b), (c + d))
+    step_3 = karatsuba((a.to_i + b.to_i).to_s, (c.to_i + d.to_i).to_s)
     step_4 = step_3 - step_2 - step_1
-    ((10 ** len) * step_1) + step_2 + ((10 ** (len/2)) * step_4)
+    ((10 ** len_n) * step_1) + step_2 + ((10 ** (len_n/2)) * step_4)
   end
 end
 
@@ -42,3 +51,4 @@ puts karatsuba(y, x)
 #TODO:
 # - Does the algorithim work if n and m are not the same lenght?
 # - What happens in len is odd?
+# - When is a more approiate time to normalize the length?
