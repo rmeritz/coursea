@@ -16,19 +16,23 @@ def sum_subproducts subproducts
   total_subproducts 0, subproducts, 1
 end
 
+def carry_over_and_new_digit product
+  prod_mod = product % 10
+  if prod_mod == product
+    carry_over = 0
+    new_digit = product
+  else
+    carry_over = product / 10
+    new_digit = prod_mod
+  end
+  [carry_over, new_digit]
+end
+
 def calc_subproduct i, b, carry_over, subproduct
   if b.empty?
     subproduct.unshift(carry_over).join.to_i
   else
-    product = (i * b.pop) + carry_over
-    prod_mod = product % 10
-    if prod_mod == product
-      carry_over = 0
-      new_digit = product
-    else
-      carry_over = product / 10
-      new_digit = prod_mod
-    end
+    carry_over, new_digit = carry_over_and_new_digit((i * b.pop) + carry_over)
     calc_subproduct(i, b, carry_over, subproduct.unshift(new_digit))
   end
 end
