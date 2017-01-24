@@ -5,11 +5,39 @@ require "minitest/autorun"
 
 
 class Multiplication
-  def multiply a, b
+  def brute_force_multiply a, b
     sum_subproducts(calculate_subproducts(to_digits(a), to_digits(b)))
   end
 
+  def karatsuba_multiply a, b
+    if (a < 10) || (b < 10)
+      a * b
+    else
+      m = largest_number_length a, b
+      m2 = (m/2.0).ceil
+      i, j, k, l = new_numbers a, b, m2
+      step_1 = karatsuba_multiply i, k
+      step_2 = karatsuba_multiply j, l
+      step_3 = karatsuba_multiply((i + j), (k + l))
+      step_4 = step_3 - step_2 - step_1
+      ((10 ** m) * step_1) + step_2 + ((10 ** m2) * step_4)
+    end
+  end
+
   private
+  def new_numbers a, b, m
+    a, b = to_digits(a), to_digits(b)
+    [a.take(m), a.drop(m), b.take(m), b.drop(m)].map { |i| i.join.to_i }
+  end
+
+  def largest_number_length a, b
+    [a, b].map { |i| number_of_digits(i) }.max
+  end
+
+  def number_of_digits a
+    a.to_s.length
+  end
+
   def to_digits n
     n.to_s.chars.map(&:to_i)
   end
@@ -58,11 +86,16 @@ end
 
 class MultiplicationTest < Minitest::Test
   def setup
-    @n = 13212312
-    @b = 98090980
+    @multiplication = Multiplication.new
+    @b = 1234
+    @n = 5678
   end
 
-  def test_multiplication
-    assert_equal Multiplication.new.multiply(@n, @b), @n * @b
+  def test_brute_force_multiplication
+    assert_equal @multiplication.brute_force_multiply(@n, @b), @n * @b
+  end
+
+  def test_karatsuba_multiplication
+    assert_equal @multiplication.karatsuba_multiply(@n, @b), @n * @b
   end
 end
