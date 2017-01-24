@@ -5,6 +5,7 @@ require "minitest/autorun"
 
 
 class Multiplication
+
   def brute_force_multiply a, b
     sum_subproducts(calculate_subproducts(to_digits(a), to_digits(b)))
   end
@@ -18,7 +19,7 @@ class Multiplication
       i, j, k, l = new_numbers a, b, m2
       step_1 = karatsuba_multiply i, k
       step_2 = karatsuba_multiply j, l
-      step_3 = karatsuba_multiply((i + j), (k + l))
+      step_3 = karatsuba_multiply((i + j), (k + l)) #TODO: There is bug here!
       step_4 = step_3 - step_2 - step_1
       ((10 ** m) * step_1) + step_2 + ((10 ** m2) * step_4)
     end
@@ -92,10 +93,10 @@ class MultiplicationTest < Minitest::Test
   end
 
   def test_brute_force_multiplication
-    assert_equal @multiplication.brute_force_multiply(@n, @b), @n * @b
+    assert_equal @n * @b, @multiplication.brute_force_multiply(@n, @b)
   end
 
   def test_karatsuba_multiplication
-    assert_equal @multiplication.karatsuba_multiply(@n, @b), @n * @b
+    assert_equal @n * @b, @multiplication.karatsuba_multiply(@n, @b)
   end
 end
