@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+gem 'minitest'
+require "minitest/autorun"
+
 def to_digits n
   n.to_s.chars.map(&:to_i)
 end
@@ -49,7 +52,13 @@ def multiply a, b
   sum_subproducts(calculate_subproducts(to_digits(a), to_digits(b)))
 end
 
-b = 567812312
-n = 123419999
-puts multiply n, b
-puts n * b
+class MultiplicationTest < Minitest::Test
+  def setup
+    @n = 13212312
+    @b = 98090980
+  end
+
+  def test_multiplication
+    assert_equal multiply(@n, @b), @n * @b
+  end
+end
