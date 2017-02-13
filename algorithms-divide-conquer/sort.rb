@@ -19,18 +19,15 @@ class Sort
     if unsorted.empty?
       sorted
     else
-      naive_sort(simple_insert(sorted, 0, unsorted.pop), unsorted)
+      naive_sort(simple_insert(sorted, 0, unsorted.shift), unsorted)
     end
   end
 
-  #TODO: Full of bugs
   def simple_insert(sorted, sorted_pointer, to_insert)
-    puts "#{sorted}, #{sorted_pointer}, #{to_insert}"
-    puts "#{sorted_pointer[sorted_pointer]}"
     if sorted[sorted_pointer].nil?
-      [to_insert]
+      sorted + [to_insert]
     elsif to_insert < sorted[sorted_pointer]
-      sorted[0..sorted_pointer] + [to_insert] + sorted[sorted_pointer + 1 .. -1]
+      sorted.take(sorted_pointer) + [to_insert] + sorted.drop(sorted_pointer)
     else
       simple_insert sorted, sorted_pointer + 1, to_insert
     end
