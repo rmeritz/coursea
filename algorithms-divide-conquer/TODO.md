@@ -1,0 +1,6 @@
+- Merge Sort
+- Quicksort
+- Counting Inversions
+- Subcubic Matrix Mutlitplication
+- Closest Pair
+- Minimum Cut Problem
