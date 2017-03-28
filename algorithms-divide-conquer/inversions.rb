@@ -6,6 +6,27 @@ require "minitest/autorun"
 
 class Inversions
   def brute_force_inversions l
+    do_brute_force_inversions l.drop(1), l.first, 0
+  end
+
+  private
+
+  def do_brute_force_inversions l, first, count
+    if l.empty?
+      count
+    else
+      do_brute_force_inversions(l.drop(1), l.first, get_inversion_for_pair(l, first, count))
+    end
+  end
+
+  def get_inversion_for_pair l, first, count
+    l.inject(count) do | c, n |
+      if first > n
+        c + 1
+      else
+        c
+      end
+    end
   end
 end
 
