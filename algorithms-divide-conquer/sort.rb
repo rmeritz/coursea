@@ -11,10 +11,34 @@ class Sort
   end
 
   def merge_sort l
-    l
+    len = l.length
+    if len <= 1
+      l
+    else
+      merge(merge_sort(l.take(len/2)), merge_sort(l.drop(len/2)))
+    end
   end
 
   private
+
+  def merge(a, b)
+    do_merge(a, b, [])
+  end
+
+  def do_merge(a, b, merged_list)
+    if a.first.nil?
+      merged_list + b
+    elsif b.first.nil?
+      merged_list + a
+    elsif a.first < b.first
+      do_merge(a.drop(1), b, merged_list << a.first)
+    elsif a.first >= b.first
+      do_merge(a, b.drop(1), merged_list << b.first)
+    end
+  end
+
+  ######################
+
   def naive_sort(sorted, unsorted)
     if unsorted.empty?
       sorted
@@ -50,7 +74,6 @@ class SortTest < Minitest::Test
   end
 
   def test_merge_sort
-    skip
     assert_equal @sorted, @sort.merge_sort(@already_sorted)
     assert_equal @sorted, @sort.merge_sort(@backwards)
     assert_equal @sorted, @sort.merge_sort(@random)
