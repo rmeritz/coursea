@@ -12,9 +12,12 @@ class MatrixMultiplication
   end
 
   def naive_recursive_matrix_multiply x, y
-    # a, b, c, d = submatrixes(x)
-    # e, f, g, h = submatrixes(y)
-    # [[ae + bg,  af + bh], [ce + dh, cf + dh]]
+    a, b, c, d = submatrixes(x)
+    e, f, g, h = submatrixes(y)
+    Matrix.vstack(
+      Matrix.hstack(a*e + b*g,  a*f + b*h),
+      Matrix.hstack(c*e + d*g, c*f + d*h)
+    )
   end
 
   def strassen_subcubic_matrix_multiply x, y
@@ -31,6 +34,17 @@ class MatrixMultiplication
   end
 
   private
+
+  def submatrixes a
+    row_count = a.row_count
+    column_count = a.column_count
+    [
+      a.minor(0, row_count/2, 0, column_count/2),
+      a.minor(0, row_count/2, column_count/2, column_count/2),
+      a.minor(row_count/2, row_count/2, 0, column_count/2),
+      a.minor(row_count/2, row_count/2, column_count/2, column_count/2)
+    ]
+  end
 
   def build_rows a, b, row_counter, product
     current_row = a.row(row_counter)
@@ -84,10 +98,22 @@ class MatrixMultiplicationTest < Minitest::Test
                 )
   end
 
+  def test_naive_recursive_matrix_multiplication
+    assert_equal(@m1 * @m2,
+                 @matrix_multiplication.naive_recursive_matrix_multiply(@m1, @m2)
+                )
+    assert_equal(@m3 * @m4,
+                 @matrix_multiplication.naive_recursive_matrix_multiply(@m3, @m4)
+                )
+  end
+
   def test_strassen_subcubic_matrix_multiplication
     skip
     assert_equal(@m1 * @m2,
                  @matrix_multiplication.strassen_subcubic_matrix_multiply(@m1, @m2)
+                )
+    assert_equal(@m3 * @m4,
+                 @matrix_multiplication.strassen_subcubic_matrix_multiply(@m3, @m4)
                 )
   end
 end
