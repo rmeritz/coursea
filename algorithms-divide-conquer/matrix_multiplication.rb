@@ -11,7 +11,23 @@ class MatrixMultiplication
     Matrix.rows(build_rows(a, b, 0, []))
   end
 
-  def strassen_subcubic_matrix_multiply a, b
+  def naive_recursive_matrix_multiply x, y
+    # a, b, c, d = submatrixes(x)
+    # e, f, g, h = submatrixes(y)
+    # [[ae + bg,  af + bh], [ce + dh, cf + dh]]
+  end
+
+  def strassen_subcubic_matrix_multiply x, y
+    # a, b, c, d = submatrixes(x)
+    # e, f, g, h = submatrixes(y)
+    # p1 = a * (f-h)
+    # p2 = (a + b) * h
+    # p3 = (c + d) * e
+    # p4 = d * (g - e)
+    # p5 = (a + d) * (e + h)
+    # p6 = (b - d) * (g + h)
+    # p7 = (a - c) * (e + f)
+    # [[(p5 + p4 - p2 + p6), (p1 + p2)], [(p3 + p4), (p1 + p5 - p3 - p7)]]
   end
 
   private
@@ -47,11 +63,24 @@ class MatrixMultiplicationTest < Minitest::Test
     @matrix_multiplication = MatrixMultiplication.new
     @m1 = Matrix[[1, 2], [3, 4]]
     @m2 = Matrix[[5, 6], [7, 8]]
+    @m3 = Matrix[[1, 2, 3, 4],
+                 [5, 6, 7, 8],
+                 [9, 10, 11, 12],
+                 [13, 14, 15, 16]
+    ]
+    @m4 = Matrix[[11, 12, 13, 14],
+                 [15, 16, 17, 18],
+                 [19, 110, 111, 112],
+                 [113, 114, 115, 116]
+    ]
   end
 
   def test_brute_force_matrix_multiplication
     assert_equal(@m1 * @m2,
                  @matrix_multiplication.brute_force_matrix_multiply(@m1, @m2)
+                )
+    assert_equal(@m3 * @m4,
+                 @matrix_multiplication.brute_force_matrix_multiply(@m3, @m4)
                 )
   end
 
