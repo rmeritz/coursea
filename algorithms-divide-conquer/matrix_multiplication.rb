@@ -31,16 +31,23 @@ class MatrixMultiplication
   end
 
   def strassen_subcubic_matrix_multiply x, y
-    # a, b, c, d = submatrixes(x)
-    # e, f, g, h = submatrixes(y)
-    # p1 = a * (f-h)
-    # p2 = (a + b) * h
-    # p3 = (c + d) * e
-    # p4 = d * (g - e)
-    # p5 = (a + d) * (e + h)
-    # p6 = (b - d) * (g + h)
-    # p7 = (a - c) * (e + f)
-    # [[(p5 + p4 - p2 + p6), (p1 + p2)], [(p3 + p4), (p1 + p5 - p3 - p7)]]
+    if can_subdivide?(x) && can_subdivide?(y)
+      a, b, c, d = submatrixes(x)
+      e, f, g, h = submatrixes(y)
+      p1 = strassen_subcubic_matrix_multiply(a, f - h)
+      p2 = strassen_subcubic_matrix_multiply(a + b, h)
+      p3 = strassen_subcubic_matrix_multiply(c + d, e)
+      p4 = strassen_subcubic_matrix_multiply(d, g - e)
+      p5 = strassen_subcubic_matrix_multiply(a + d, e + h)
+      p6 = strassen_subcubic_matrix_multiply(b - d, g + h)
+      p7 = strassen_subcubic_matrix_multiply(a - c, e + f)
+      Matrix.vstack(
+        Matrix.hstack(p5 + p4 - p2 + p6, p1 + p2),
+        Matrix.hstack(p3 + p4, p1 + p5 - p3 - p7)
+      )
+    else
+      Matrix[[x[0, 0] * y[0, 0]]]
+    end
   end
 
   private
@@ -123,7 +130,6 @@ class MatrixMultiplicationTest < Minitest::Test
   end
 
   def test_strassen_subcubic_matrix_multiplication
-    skip
     assert_equal(@m1 * @m2,
                  @matrix_multiplication.strassen_subcubic_matrix_multiply(@m1, @m2)
                 )
