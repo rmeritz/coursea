@@ -12,12 +12,22 @@ class MatrixMultiplication
   end
 
   def naive_recursive_matrix_multiply x, y
-    a, b, c, d = submatrixes(x)
-    e, f, g, h = submatrixes(y)
-    Matrix.vstack(
-      Matrix.hstack(a*e + b*g,  a*f + b*h),
-      Matrix.hstack(c*e + d*g, c*f + d*h)
-    )
+    if can_subdivide?(x) && can_subdivide?(y)
+      a, b, c, d = submatrixes(x)
+      e, f, g, h = submatrixes(y)
+      Matrix.vstack(
+        Matrix.hstack(
+          naive_recursive_matrix_multiply(a, e) + naive_recursive_matrix_multiply(b, g),
+          naive_recursive_matrix_multiply(a, f) + naive_recursive_matrix_multiply(b, h)
+        ),
+        Matrix.hstack(
+          naive_recursive_matrix_multiply(c, e) + naive_recursive_matrix_multiply(d, g),
+          naive_recursive_matrix_multiply(c, f) + naive_recursive_matrix_multiply(d, h)
+        )
+      )
+    else
+      Matrix[[x[0, 0] * y[0, 0]]]
+    end
   end
 
   def strassen_subcubic_matrix_multiply x, y
@@ -36,15 +46,20 @@ class MatrixMultiplication
   private
 
   def submatrixes a
-    row_count = a.row_count
-    column_count = a.column_count
+    size = a.row_count
     [
-      a.minor(0, row_count/2, 0, column_count/2),
-      a.minor(0, row_count/2, column_count/2, column_count/2),
-      a.minor(row_count/2, row_count/2, 0, column_count/2),
-      a.minor(row_count/2, row_count/2, column_count/2, column_count/2)
+      a.minor(0, size/2, 0, size/2),
+      a.minor(0, size/2, size/2, size/2),
+      a.minor(size/2, size/2, 0, size/2),
+      a.minor(size/2, size/2, size/2, size/2)
     ]
   end
+
+  def can_subdivide? a
+    a.row_count > 1
+  end
+
+  #######
 
   def build_rows a, b, row_counter, product
     current_row = a.row(row_counter)
