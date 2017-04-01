@@ -45,7 +45,9 @@ class Sort
     if right_most_bound - left_most_bound <= 0
       l
     else
-      pivot = l[left_most_bound]
+      pivot_position = Random.new.rand(left_most_bound..right_most_bound)
+      pivot = l[pivot_position]
+      l.swap!(left_most_bound, pivot_position)
       less_than_pivot_bound = left_most_bound + 1
       for j in (less_than_pivot_bound .. right_most_bound)
         if l[j] < pivot
