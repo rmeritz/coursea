@@ -3,6 +3,12 @@
 gem 'minitest'
 require "minitest/autorun"
 
+class Array
+  def swap!(a, b)
+    self[a], self[b] = self[b], self[a]
+    self
+  end
+end
 
 class Sort
 
@@ -29,7 +35,31 @@ class Sort
     end
   end
 
+  def inplace_quick_sort l
+    do_inplace_quick_sort l, 0, l.length - 1
+  end
+
   private
+
+  def do_inplace_quick_sort l, left_most_bound, right_most_bound
+    if right_most_bound - left_most_bound <= 0
+      l
+    else
+      pivot = l[left_most_bound]
+      less_than_pivot_bound = left_most_bound + 1
+      for j in (less_than_pivot_bound .. right_most_bound)
+        if l[j] < pivot
+          l.swap!(less_than_pivot_bound, j)
+          less_than_pivot_bound = less_than_pivot_bound + 1
+        end
+      end
+      l.swap!(left_most_bound, less_than_pivot_bound - 1)
+      do_inplace_quick_sort(l, left_most_bound, less_than_pivot_bound - 2)
+      do_inplace_quick_sort(l, less_than_pivot_bound, right_most_bound)
+    end
+  end
+
+  #############
 
   def choose_pivot l
     [l.first, l.drop(1)]
@@ -111,5 +141,11 @@ class SortTest < Minitest::Test
     assert_equal @sorted, @sort.quick_sort(@already_sorted)
     assert_equal @sorted, @sort.quick_sort(@backwards)
     assert_equal @sorted, @sort.quick_sort(@random)
+  end
+
+  def test_inplace_quick_sort
+    assert_equal @sorted, @sort.inplace_quick_sort(@already_sorted)
+    assert_equal @sorted, @sort.inplace_quick_sort(@backwards)
+    assert_equal @sorted, @sort.inplace_quick_sort(@random)
   end
 end
