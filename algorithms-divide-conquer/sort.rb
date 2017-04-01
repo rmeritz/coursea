@@ -19,7 +19,35 @@ class Sort
     end
   end
 
+  def quick_sort l
+    if l.length <= 1
+      l
+    else
+      pivot, rest_of_list = choose_pivot(l)
+      less_than_pivot, greater_than_pivot = partition(pivot, rest_of_list)
+      quick_sort(less_than_pivot) + [pivot] + quick_sort(greater_than_pivot)
+    end
+  end
+
   private
+
+  def choose_pivot l
+    [l.first, l.drop(1)]
+  end
+
+  def partition pivot, rest_of_list
+    less_than_pivot, greater_than_pivot = [], []
+    rest_of_list.each do |e|
+      if e > pivot
+        greater_than_pivot << e
+      else
+        less_than_pivot << e
+      end
+    end
+    [less_than_pivot, greater_than_pivot]
+  end
+
+  #####################
 
   def merge(a, b)
     do_merge(a, b, [])
@@ -77,5 +105,11 @@ class SortTest < Minitest::Test
     assert_equal @sorted, @sort.merge_sort(@already_sorted)
     assert_equal @sorted, @sort.merge_sort(@backwards)
     assert_equal @sorted, @sort.merge_sort(@random)
+  end
+
+  def test_quick_sort
+    assert_equal @sorted, @sort.quick_sort(@already_sorted)
+    assert_equal @sorted, @sort.quick_sort(@backwards)
+    assert_equal @sorted, @sort.quick_sort(@random)
   end
 end
