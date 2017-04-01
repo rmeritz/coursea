@@ -90,4 +90,16 @@ class InversionsTest < Minitest::Test
     assert_equal(1, @inversions.merge_sort_to_count_inversions(@right))
     assert_equal(1, @inversions.merge_sort_to_count_inversions(@left))
   end
+
+  def test_inversions_file
+    l = []
+    File.open("./IntegerArray.txt", "r").each_line do |line|
+      l << line.to_i
+    end
+    assert_equal(1, @inversions.merge_sort_to_count_inversions(l))
+    # TODO: I get an "stack level to deep error" I don't think I actually have
+    # an infinate loop I think I just have a really big stack. Is this a Ruby
+    # thing? Or a function of just how I'm doing the recursion? Or am I wrong an
+    # I actually have an infintate loop?
+  end
 end
